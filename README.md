@@ -2,7 +2,7 @@
 
 ### 1.修改config.env。
 
-填写MySQL账号以及密码，数据库名字填写后程序会自动创建相应的数据库，如果存在则跳过创建。
+填写MySQL账号以及密码，数据库名字填写后程序会自动创建相应的数据库，如果数据库存在则跳过创建。
 
 
 ### 2.用户注册。
@@ -16,7 +16,7 @@ type:json
 Request-data:
 
 {
-	"NickName": "Golang",
+    "NickName": "Golang",
     "Email": "1144620122@qq.com",
     "PassWord": "PassWordPassWord",
     "UserAnswer": "https://api.syrme.top/v1/api/file/image/upload/headers/107.png"
