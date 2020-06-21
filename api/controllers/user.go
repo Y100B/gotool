@@ -7,7 +7,6 @@ import (
 	"gotool/api/models"
 	"gotool/api/repository"
 	"gotool/api/repository/crud"
-	"log"
 	"net/http"
 
 	_ "github.com/swaggo/gin-swagger"
@@ -28,22 +27,21 @@ func Register(c *gin.Context) {
 	user := models.User{}
 	if err:=c.ShouldBindJSON(&user);err==nil{
 		if len(user.Email) ==0 || len(user.PassWord)==0{
-			c.JSON(200, gin.H{"code": 201, "msg": "邮箱及密码不能为空！", "data": ""})
+			c.JSON(http.StatusOK, gin.H{"code": 201, "msg": "邮箱及密码不能为空！", "data": ""})
 		}
 		db := database.NewDb()
 		repo := crud.NewRepositoryUsersCRUD(db)
 		func(userRepository repository.UserRepository) {
 			userDb, err := userRepository.Save(user)
 			if err != nil {
-				c.JSON(200, gin.H{"code": 201, "msg": "保存用户出错！", "data": ""})
+				c.JSON(http.StatusOK, gin.H{"code": 201, "msg": "保存用户出错！", "data": ""})
 				return
 			}
 			userDb.PassWord = ""
-			c.JSON(200, gin.H{"code": 200, "msg": "注册成功！", "data": userDb})
+			c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "注册成功！", "data": userDb})
 		}(repo)
 	}else {
-		log.Println(err)
-		c.JSON(200, gin.H{"code": 201, "msg": "表单解析错误！", "data": ""})
+		c.JSON(http.StatusOK, gin.H{"code": 201, "msg": "表单解析错误！", "data": ""})
 	}
 
 }
@@ -61,20 +59,19 @@ func Login(c *gin.Context) {
 	if err:=c.ShouldBindJSON(&user);err==nil{
 		token, err := auth.Login(user.Email, user.PassWord)
 		if err != nil {
-			c.JSON(200, gin.H{"code": 201, "msg": "登录失败！", "data": ""})
+			c.JSON(http.StatusOK, gin.H{"code": 201, "msg": "登录失败！", "data": ""})
 			return
 		}
-		c.JSON(200, gin.H{"code": 200, "msg": "登录成功！", "Authorization": token})
+		c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "登录成功！", "Authorization": token})
 	}else {
-		log.Println(err)
-		c.JSON(200, gin.H{"code": 201, "msg": "表单解析错误！", "data": ""})
+		c.JSON(http.StatusOK, gin.H{"code": 201, "msg": "表单解析错误！", "data": ""})
 	}
 
 }
 
 // @Tags 网站用户系统
 // @Description 判断是否是登录用户
-// @Accept x-www-form-urlencoded
+// @Accept json
 // @Produce json
 // @Success 200 {string} string    "ok"
 // @Router /v1/api/user/data [post]
